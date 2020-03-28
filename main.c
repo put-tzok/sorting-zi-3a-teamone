@@ -107,7 +107,7 @@ int split(int* t, int a, int b)
 
 int randomSplit(int* t, int a, int b)
 {
-    int x = a + rand() % (b - a);
+    int x = a + rand() % (b-a);
     change(t, x, b);
     return split(t, a, b);
 }
@@ -129,9 +129,41 @@ void quick_sort(int* t, unsigned int n)
     qSort(t, 0, n-1);
 }
 
+void heapify(int* t, int n, int i)
+{
+    int max = i;
+    int a = (i*2)+1;
+    int b = (i*2)+2;
+    
+    if (a < n && t[a] > t[max])
+    {
+        max = a;
+    }
+    
+    if (b < n && t[b] > t[max])
+    {
+        max = b;
+    }
+    
+    if (max != i)
+    {
+        change(t, i, max);
+        heapify(t, n, max);
+    }
+}
+
 void heap_sort(int* t, unsigned int n)
 {
-    // TODO
+    for (int i = (n/2)-1; i >= 0; i--)
+    {
+        heapify(t, n, i);
+    }
+
+    for (int i = n-1; i >= 0; i--)
+    {
+        change(t, 0, i);
+        heapify(t, i, 0);
+    }
 }
 
 void fill_random(int* t, unsigned int n) {
@@ -176,8 +208,7 @@ void is_sorted(int* t, unsigned int n) {
 
 void (*fill_functions[])(int*, unsigned int) = { fill_random, fill_increasing, fill_decreasing, fill_vshape };
 void (*check_functions[])(int*, unsigned int) = { is_random, is_increasing, is_decreasing, is_vshape };
-//void (*sort_functions[])(int*, unsigned int) = { selection_sort, insertion_sort, quick_sort, heap_sort };
-void (*sort_functions[])(int*, unsigned int) = { selection_sort, insertion_sort, quick_sort };
+void (*sort_functions[])(int*, unsigned int) = { selection_sort, insertion_sort, quick_sort, heap_sort };
 
 char* fill_names[] = { "Random", "Increasing", "Decreasing", "V-Shape" };
 char* sort_names[] = { "SelectionSort", "InsertionSort", "QuickSort", "HeapSort" };
