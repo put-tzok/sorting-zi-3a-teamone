@@ -105,12 +105,20 @@ int split(int* t, int a, int b)
     return i+1;
 }
 
+int randomSplit(int* t, int a, int b)
+{
+    int x = a + rand() % (b - a);
+    change(t, x, b);
+    return split(t, a, b);
+}
+
 void qSort(int* t, int a, int b)
 {
     int x;
     if (a < b)
     {
         x = split(t, a, b);
+        //x = randomSplit(t, a, b);
         qSort(t, a, x-1);
         qSort(t, x+1, b);
     }
