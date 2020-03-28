@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-unsigned int ns[] = {10, 100, 200, 500, 1000, 1500, 2000};
+unsigned int ns[] = { 100, 200, 500, 1000, 1500, 2000 };
 
 void fill_increasing(int* t, unsigned int n)
 {
@@ -17,7 +17,7 @@ void fill_decreasing(int* t, unsigned int n)
 {
     for (int i = 0; i < n; i++)
     {
-        t[i] = n - i - 1;
+        t[i] = n-i-1;
     }
 }
 
@@ -25,40 +25,44 @@ void fill_vshape(int* t, unsigned int n)
 {
     int* start = t;
     int* end;
-    end = t + n - 1;
-
+    end = t+n-1;
     int j = n;
 
-    while (end - start > 1)
+    while (end-start > 1)
     {
         *start = j;
-        j--;
+        j = j-1;
         *end = j;
-        j--;
+        j = j-1;
         start++;
         end--;
     }
 }
 
+void change(int* t, int a, int b)
+{
+    int temp = t[a];
+    t[a] = t[b];
+    t[b] = temp;
+}
+
 void selection_sort(int* t, unsigned int n)
 {
-    int temp, pos;
+    int pos;
 
     for (int a = 0; a < n; a++)
     {
-        for (int a = 0; a < (n - 1); a++)
+        for (int a = 0; a < (n-1); a++)
         {
             pos = a;
-            for (int b = a + 1; b < n; b++)
+            for (int b = a+1; b < n; b++)
             {
-                if ( t[pos] > t[b] )
+                if (t[pos] > t[b])
                     pos = b;
             }
-            if ( pos != a )
+            if (pos != a)
             {
-                temp = t[a];
-                t[a] = t[pos];
-                t[pos] = temp;
+                change(t, a, pos);
             }
         }
     }
@@ -71,21 +75,50 @@ void insertion_sort(int* t, unsigned int n)
     for (i = 1; i < n; i++)
     {
         temp = t[i];
-        j = i - 1;
+        j = i-1;
 
         while (j >= 0 && t[j] > temp)
         {
-            t[j + 1] = t[j];
-            j = j - 1;
+            t[j+1] = t[j];
+            j = j-1;
         }
+        t[j+1] = temp;
+    }
+}
 
-        t[j + 1] = temp;
+int split(int* t, int a, int b)
+{
+    int x, i;
+    x = t[b];
+    i = a-1;
+
+    for (int j = a; j <= b-1; j++)
+    {
+        if (t[j] < x)
+        {
+            i++;
+            change(t, i, j);
+        }
+    }
+    change(t, i+1, b);
+
+    return i+1;
+}
+
+void qSort(int* t, int a, int b)
+{
+    int x;
+    if (a < b)
+    {
+        x = split(t, a, b);
+        qSort(t, a, x-1);
+        qSort(t, x+1, b);
     }
 }
 
 void quick_sort(int* t, unsigned int n)
 {
-    // TODO
+    qSort(t, 0, n-1);
 }
 
 void heap_sort(int* t, unsigned int n)
@@ -136,7 +169,7 @@ void is_sorted(int* t, unsigned int n) {
 void (*fill_functions[])(int*, unsigned int) = { fill_random, fill_increasing, fill_decreasing, fill_vshape };
 void (*check_functions[])(int*, unsigned int) = { is_random, is_increasing, is_decreasing, is_vshape };
 //void (*sort_functions[])(int*, unsigned int) = { selection_sort, insertion_sort, quick_sort, heap_sort };
-void (*sort_functions[])(int*, unsigned int) = { selection_sort, insertion_sort};
+void (*sort_functions[])(int*, unsigned int) = { selection_sort, insertion_sort, quick_sort };
 
 char* fill_names[] = { "Random", "Increasing", "Decreasing", "V-Shape" };
 char* sort_names[] = { "SelectionSort", "InsertionSort", "QuickSort", "HeapSort" };
